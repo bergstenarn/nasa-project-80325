@@ -45,8 +45,9 @@ function loadPlanetsData() {
   });
 }
 
-function getAllPlanets() {
-  return habitablePlanets;
+async function getAllPlanets() {
+  // return habitablePlanets;
+  return await planets.find({});
 }
 
 module.exports = {
