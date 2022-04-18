@@ -14,6 +14,7 @@ function isHabitable(planet) {
 
 function loadPlanetsData() {
   return new Promise((resolve, reject) => {
+    const savedPlanets = [];
     fs.createReadStream(
       path.join(__dirname, "..", "..", "data", "./kepler_data.csv")
     )
@@ -23,9 +24,9 @@ function loadPlanetsData() {
           columns: true,
         })
       )
-      .on("data", async (data) => {
+      .on("data", (data) => {
         if (isHabitable(data)) {
-          await savePlanet(data);
+          savedPlanets.push(savePlanet(data));
         }
       })
       .on("error", (err) => {
@@ -33,6 +34,7 @@ function loadPlanetsData() {
         reject(err);
       })
       .on("end", async () => {
+        await Promise.all(savedPlanets);
         const countPlanetsFound = (await getAllPlanets()).length;
         console.log(`${countPlanetsFound} habitable planets found!`);
         resolve();
